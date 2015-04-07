@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+
+version = '1.0-BETA'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.0"
+
+
+
+    buildTypes {
+        defaultConfig {
+            minSdkVersion 16
+            targetSdkVersion 19
+            versionCode 1
+            versionName "1.0"
+        }
+
+        debug {
+            debuggable true
+        }
+    }
+
+    sourceSets {
+        test {
+            java.srcDir file('src/androidTest/java')
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile project(':java:slamon-lib')
+    compile 'com.android.support:support-v4:22.0.0'
+    compile 'org.jboss.aerogear:aerogear-android-core:2.0.0'
+    compile 'org.jboss.aerogear:aerogear-android-pipe:2.0.0'
+    compile 'org.jboss.aerogear:aerogear-android-push:2.0.0'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'
+    testCompile 'com.google.guava:guava:18.0'
+    testCompile 'org.robolectric:robolectric:2.4'
+    testCompile 'org.mockito:mockito-core:1.10.18'
+
+}

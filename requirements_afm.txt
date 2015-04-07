@@ -1,0 +1,8 @@
+bottle
+webtest
+SQLAlchemy
+jsonschema
+nose
+coverage
+dateutils
+psycopg2

@@ -1,0 +1,16 @@
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'http://repository.jboss.org/nexus/content/groups/public/'
+    }
+}
+
+dependencies {
+    compile 'org.kie:kie-api:6.0.1.Final'
+    compile 'org.drools:drools-compiler:6.0.1.Final'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.hamcrest:hamcrest-core:1.3'
+    testCompile project(':java:jbpm')
+}

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SLAMon Android Agent</string>
+    <string name="text_view">SLAMon Android Agent Debug view\n</string>
+</resources>

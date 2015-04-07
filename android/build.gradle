@@ -1,0 +1,6 @@
+allprojects {
+    group = 'org.slamon.android'
+}
+
+dependencies {
+}

@@ -1,0 +1,3 @@
+rootProject.name = 'SLAMon'
+
+include ":java:jbpm", ":java:slamon-lib", ":java:system_tests", ":android:slamon-android"

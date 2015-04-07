@@ -1,0 +1,15 @@
+*.pyc
+*.swp
+.idea/
+env/
+.coverage
+jbpm/target/
+*.DS_Store
+*.vagrant
+*.log
+slamon.egg-info
+local.properties
+build.xml
+*.class
+*.iml
+build/

@@ -1,0 +1,7 @@
+jsonschema
+nose
+coverage
+dateutils
+mock
+responses
+requests

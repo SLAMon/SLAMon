@@ -1,0 +1,66 @@
+box		= 'puppetlabs/ubuntu-14.04-64-puppet'
+url		= 'puppetlabs/ubuntu-14.04-64-puppet'
+hostname	= 'slamshuffle'
+domain		= 'slam.on'
+ram		= '1024'
+
+slamon_root_dir	 = '../'
+unit_test_file   = './unit_test.sh'
+system_test_file = './system_test.sh'
+
+$install_script = <<SCRIPT
+	echo Updating base system
+	apt-get -y update
+	apt-get -y upgrade
+	echo Done
+	echo Installing needed packages
+	apt-get -y install postgresql-9.3
+	apt-get -y install postgresql-server-dev-9.3
+	apt-get -y install python3-pip
+	apt-get -y install software-properties-common
+	apt-get -y install vim
+	add-apt-repository ppa:webupd8team/java
+	apt-get -y update
+	echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+	apt-get -y install oracle-java8-installer
+	apt-get -y install maven
+	pip3 install virtualenv
+	echo Done
+	echo Setting up database
+	sudo -u postgres psql -c 'DROP DATABASE IF EXISTS slamon;'
+	sudo -u postgres psql -c 'DROP DATABASE IF EXISTS slamon_tests;'
+	sudo -u postgres psql -c 'DROP USER IF EXISTS afm;'
+	sudo -u postgres psql -c 'CREATE DATABASE slamon;'
+	sudo -u postgres psql -c 'CREATE DATABASE slamon_tests;'
+	sudo -u postgres psql -c "CREATE USER afm WITH PASSWORD 'changeme';"
+	sudo -u postgres psql -c 'GRANT ALL ON DATABASE slamon TO afm;'
+	sudo -u postgres psql -c 'GRANT ALL ON DATABASE slamon_tests TO afm;'
+	echo Done
+	echo Setting up permissions
+	chmod +x /home/vagrant/unit_test.sh
+	chmod +x /home/vagrant/system_test.sh
+	echo Done
+SCRIPT
+
+Vagrant.configure('2') do |config|
+	config.vm.box = box
+	config.vm.box_url = url
+	config.vm.host_name = hostname + '.' + domain
+	config.vm.network 'private_network', type: 'dhcp'
+
+	config.vm.provider 'virtualbox' do |vb|
+		vb.customize [
+			'modifyvm', :id,
+			'--name', hostname,
+			'--memory', ram
+		]
+	end
+	
+	config.vm.provision 'file', source: slamon_root_dir, destination: 'SLAMon'
+	config.vm.provision 'file', source: unit_test_file, destination: 'unit_test.sh'
+	config.vm.provision 'file', source: system_test_file, destination: 'system_test.sh'
+
+	config.vm.provision 'shell' do |shell|
+		shell.inline = $install_script
+	end
+end

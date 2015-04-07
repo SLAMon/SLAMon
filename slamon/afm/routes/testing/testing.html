@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SLAMon Demo</title>
+    <style>
+        body, th, td, p {
+            font-size: 12pt;
+            font-family: 'Segoe UI', sans-serif;
+            background: #eee;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            list-style: none;
+            margin: 0.5em;
+            padding: 0.5em;
+        }
+
+        li span {
+            display: block;
+            font-size: 10pt;
+            color: #444;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 90%;
+        }
+
+        div.page {
+            text-align: center;
+        }
+
+        div.page > div {
+            display: inline-block;
+            width: 30%;
+            background: #fff;
+            vertical-align: top;
+        }
+
+        li.completed {
+            background: #99ff88;
+        }
+        li.failed, div.error {
+            background: #ff8899 !important;
+        }
+        div.busy input,
+        div.busy textarea {
+            opacity: 0.5;
+        }
+    </style>
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script language="JavaScript">
+        $(function () {
+
+            $("#task_submit").click(function () {
+                var values = {
+                    'task_id': $("#task_id").val(),
+                    'test_id': $("#test_id").val(),
+                    'task_type': $("#task_type").val(),
+                    'task_version': parseInt($("#task_version").val()),
+                    'task_data': JSON.parse($("#task_data").val())
+                };
+                $("#task_form").addClass('busy').removeClass('error');
+                console.log(values);
+                $.ajax('/testing/tasks', {
+                    data: JSON.stringify(values),
+                    contentType: 'application/json',
+                    type: 'POST'
+                }).done(function(){
+                    $("#task_form").removeClass('busy');
+                }).error(function(){
+                    $("#task_form").removeClass('busy').addClass('error');
+                });
+            });
+
+            setInterval(function () {
+                $.getJSON('/testing/agents').done(function (data) {
+                    console.log(data);
+                    $(data.agents).each(function () {
+                        var item = $('#' + this.agent_id);
+                        if (!item.length) {
+                            item = $('<li>')
+                                    .attr('id', this.agent_id)
+                                    .text(this.agent_name)
+                                    .append($('<span class="id"/>').text(this.agent_id))
+                                    .append('<span class="last_seen"/>')
+                                    .appendTo('#agents ul');
+                        }
+                        item.find(".last_seen").text(this.last_seen);
+                    });
+                });
+                $.getJSON('/testing/tasks').done(function (data) {
+                    console.log(data);
+                    $(data.tasks).each(function () {
+                        var item = $('#' + this.task_id);
+                        if (!item.length) {
+                            item = $('<li>')
+                                    .attr('id', this.task_id)
+                                    .text(this.task_type + " " + this.task_version)
+                                    .append($('<span class="id"/>').text(this.task_id))
+                                    .append('<span class="task_time"/>')
+                                    .append('<span class="task_data"/>')
+                                    .appendTo('#tasks ul');
+                        }
+                        if (this.task_failed) {
+                            item.addClass('failed');
+                            item.find(".task_time").text(this.task_failed);
+                            item.find(".task_data").text("ERROR:" + JSON.stringify(this.task_error));
+                        } else if (this.task_completed) {
+                            item.addClass('completed');
+                            item.find(".task_time").text(this.task_completed);
+                            item.find(".task_data").text("RESULT: " + this.task_result);
+                        }
+                    });
+                });
+            }, 1000);
+        });
+    </script>
+</head>
+<body>
+<div class="page">
+    <h1>SLAMon Status</h1>
+
+    <div id="agents"><h2>Known agents</h2>
+        <ul></ul>
+    </div>
+    <div id="tasks"><h2>Tasks</h2>
+        <ul></ul>
+    </div>
+    <div id="task_form">
+        <h2>Add a task</h2>
+        <label for="task_id">task_id</label>
+        <input type="text" value="de305d54-75b4-431b-adb2-eb6b9e546013" id="task_id"/>
+        <label for="test_id">test_id</label>
+        <input type="text" value="de305d54-75b4-431b-adb2-eb6b9e546013" id="test_id"/>
+        <label for="task_type">task_type</label>
+        <input type="text" value="wait" id="task_type"/>
+        <label for="task_version">task_version</label>
+        <input type="text" value="1" id="task_version"/>
+        <label for="task_data">task_data</label>
+        <textarea id="task_data">{}</textarea>
+        <button id="task_submit">Send</button>
+    </div>
+</div>
+</body>
+</html>
