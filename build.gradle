@@ -2,10 +2,16 @@ apply plugin: 'idea'
 
 buildscript {
     repositories {
-        jcenter()
+        maven {
+            url "https://jcenter.bintray.com"
+        }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.3'
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
 }
