@@ -21,8 +21,11 @@ android {
     }
 
     sourceSets {
+	main {
+	    java.srcDir 'src/main/java'
+	}	
         test {
-            java.srcDir file('src/androidTest/java')
+            java.srcDir 'src/androidTest/java'
         }
     }
 }

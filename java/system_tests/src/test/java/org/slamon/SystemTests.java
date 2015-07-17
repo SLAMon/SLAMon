@@ -33,7 +33,7 @@ class AFM
 	public AFM()
 	{
 		processBuilder = new ProcessBuilder();
-		processBuilder.directory(new File("/home/vagrant/SLAMon/"));
+		processBuilder.directory(new File("."));
 	}
 
 	/*
@@ -60,7 +60,7 @@ class AFM
 
 	public void waitForStartup() throws IOException, InterruptedException
 	{
-		processBuilder.command("/bin/bash", "./test/environment/wait_for_afm.sh");
+		processBuilder.command("/bin/bash", "./test_environment/wait_for_afm.sh");
 		Process waitProcess = processBuilder.start();
 
 		waitProcess.waitFor();
@@ -75,7 +75,7 @@ class Agent
 	public Agent()
 	{
 		processBuilder = new ProcessBuilder();
-		processBuilder.directory(new File("/home/vagrant/SLAMon/"));
+		processBuilder.directory(new File("."));
 	}
 
 	/*

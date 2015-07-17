@@ -9,8 +9,11 @@ RUN apt-get -y update && apt-get -y upgrade && \
 RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
 RUN add-apt-repository ppa:webupd8team/java && apt-get -y update && \
         DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends oracle-java8-installer oracle-java8-set-default \
-                                                          python3-pip postgresql-client libpq-dev gradle
+                                                          postgresql-client libpq-dev
+RUN add-apt-repository ppa:webupd8team/java && apt-get -y update && \
+        DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip gradle
 RUN pip3 install --upgrade nose mock coverage webtest bottle SQLAlchemy jsonschema dateutils psycopg2 requests responses
+
 # Android SDK
 RUN dpkg --add-architecture i386
 RUN apt-get -y update && \
