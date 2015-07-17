@@ -1,3 +1,4 @@
+apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.library'
 
 version = '1.0-BETA'
@@ -5,8 +6,6 @@ version = '1.0-BETA'
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.0"
-
-
 
     buildTypes {
         defaultConfig {
@@ -38,6 +37,7 @@ repositories {
 dependencies {
     compile project(':java:slamon-lib')
     compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.google.android.gms:play-services:6.1.11'
     compile 'org.jboss.aerogear:aerogear-android-core:2.0.0'
     compile 'org.jboss.aerogear:aerogear-android-pipe:2.0.0'
     compile 'org.jboss.aerogear:aerogear-android-push:2.0.0'
