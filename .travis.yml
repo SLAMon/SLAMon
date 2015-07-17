@@ -11,6 +11,7 @@ cache:
     directories:
         - $HOME/python3.4
         - $HOME/.cache/pip
+        - $HOME/.gradle/caches
 addons:
   postgresql: '9.3'
 before_install:
