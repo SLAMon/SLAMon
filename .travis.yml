@@ -1,23 +1,36 @@
 sudo: false
-language: python
-python:
-- '3.4'
+language: android
+android:
+    components:
+        - build-tools-22.0.0
+        - android-22
+        - extra-google-m2repository
+        - extra-android-m2repository
+        - extra-android-support
+cache:
+    directories:
+        - $HOME/python3.4
+        - $HOME/.cache/pip
 addons:
   postgresql: '9.3'
+before_install:
+    - bash install_python_dependencies.sh
+    - export PATH=$PATH:$HOME/python3.4/bin
 install:
-- pip3 install -r requirements_afm.txt
-- pip3 install -r requirements_agent.txt
+    - python3.4 -m pip install --user -r requirements_afm.txt
+    - python3.4 -m pip install --user -r requirements_agent.txt
 before_script:
-- psql -U postgres -c "DROP DATABASE IF EXISTS slamon;"
-- psql -U postgres -c "DROP DATABASE IF EXISTS slamon_tests;"
-- psql -U postgres -c "DROP USER IF EXISTS afm;"
-- psql -U postgres -c "CREATE DATABASE slamon;"
-- psql -U postgres -c "CREATE DATABASE slamon_tests;"
-- psql -U postgres -c "CREATE USER afm WITH PASSWORD 'changeme';"
-- psql -U postgres -c "GRANT ALL ON DATABASE slamon TO afm;"
-- psql -U postgres -c "GRANT ALL ON DATABASE slamon_tests TO afm;"
+    - psql -U postgres -c "DROP DATABASE IF EXISTS slamon;"
+    - psql -U postgres -c "DROP DATABASE IF EXISTS slamon_tests;"
+    - psql -U postgres -c "DROP USER IF EXISTS afm;"
+    - psql -U postgres -c "CREATE DATABASE slamon;"
+    - psql -U postgres -c "CREATE DATABASE slamon_tests;"
+    - psql -U postgres -c "CREATE USER afm WITH PASSWORD 'changeme';"
+    - psql -U postgres -c "GRANT ALL ON DATABASE slamon TO afm;"
+    - psql -U postgres -c "GRANT ALL ON DATABASE slamon_tests TO afm;"
 script:
-- nosetests
+    - nosetests
+    - ./gradlew check
 notifications:
     webhooks:
         urls:
