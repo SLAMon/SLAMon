@@ -1,3 +1,4 @@
+.android-sdk/
 *.pyc
 *.swp
 .idea/
@@ -13,4 +14,4 @@ build.xml
 *.class
 *.iml
 build/
-.gradle
+.gradle/

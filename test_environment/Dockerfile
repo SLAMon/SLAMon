@@ -3,6 +3,8 @@ FROM ubuntu:trusty
 ENV SLAMON_DIR /SLAMon
 ENV SLAMON_VENV_DIR /venv-slamon
 ENV POSTGRES_DOMAIN postgres
+ENV ANDROID_HOME ${SLAMON_DIR}/.android-sdk
+ENV GRADLE_USER_HOME ${SLAMON_DIR}/.gradle
 
 RUN apt-get -y update && apt-get -y upgrade && \
         DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends software-properties-common
@@ -23,3 +25,4 @@ RUN apt-get -y update && \
 ADD docker_entrypoint.sh /bin/docker_entrypoint.sh
 RUN chmod +x /bin/docker_entrypoint.sh
 RUN mkdir ${SLAMON_DIR}
+WORKDIR ${SLAMON_DIR}
