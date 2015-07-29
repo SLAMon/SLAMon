@@ -64,3 +64,35 @@ Inside vagrant machine:
 Inside vagrant machine:
 
     ./system_test.sh
+
+### How-to Docker
+
+Component versions
+
+    Docker version 1.7.0
+    docker-compose version: 1.3.1
+    CPython version: 2.7.9
+
+Run unit and system test with the following commands:
+
+    docker-compose -f test_environment/docker-compose.yml build slamon  # Build the environment, go grab a cup of coffee
+    docker-compose -f test_environment/docker-compose.yml run slamon docker_entrypoint.sh
+
+If you need to run just either, you can do:
+
+    docker-compose -f test_environment/docker-compose.yml build slamon
+    docker-compose -f test_environment/docker-compose.yml run slamon  # Will open bash
+
+In the container shell use:
+
+    nosetests  # For unit tests
+    ./gradlew test -Dtest=SystemTests -p java/system_tests/  # For system tests
+
+With the container shell you can do other Gradle commands as well, but the wrapper script `./gradlew` or `gradle.bat` is
+the recommended way.
+
+If you want to run the tests automatically, add `docker_entrypoint.sh`
+to `test_environment/docker-compose.yml` as the `slamon.command` value.
+Then you can run just:
+
+    docker-compose -f test_environment/docker-compose.yml up

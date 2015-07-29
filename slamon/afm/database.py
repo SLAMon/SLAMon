@@ -12,14 +12,15 @@ Base = declarative_base()
 
 def init_connection(unittest=False):
     global engine, session_maker, create_session
+    database_address = os.environ.get('POSTGRES_DOMAIN', 'localhost')
     if 'OPENSHIFT_POSTGRESQL_DB_URL' in os.environ:
         engine = create_engine(os.environ['OPENSHIFT_POSTGRESQL_DB_URL'])
     elif not unittest:
         engine = create_engine('postgresql+psycopg2://' + Settings.database_user + ':' + Settings.database_password +
-                               '@localhost/' + Settings.database_name)
+                               '@' + database_address + '/' + Settings.database_name)
     else:
         engine = create_engine('postgresql+psycopg2://' + Settings.test_database_user + ':' +
-                               Settings.test_database_password + '@localhost/' + Settings.test_database_name)
+                               Settings.test_database_password + '@' + database_address + '/' + Settings.test_database_name)
     create_session.remove()
     Base.metadata.bind = engine
     session_maker.configure(bind=engine)

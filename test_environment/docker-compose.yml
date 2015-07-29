@@ -1,0 +1,9 @@
+slamon:
+    build: .
+    volumes:
+    - ..:/SLAMon
+    links:
+    - postgres
+
+postgres:
+    image: postgres:9.3
