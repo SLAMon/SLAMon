@@ -1,0 +1,41 @@
+sudo: false
+language: android
+android:
+    components:
+        - build-tools-22.0.0
+        - android-22
+        - extra-google-m2repository
+        - extra-android-m2repository
+        - extra-android-support
+cache:
+    directories:
+        - $HOME/python3.4
+        - $HOME/.cache/pip
+        - $HOME/.gradle/caches
+addons:
+  postgresql: '9.3'
+before_install:
+    - bash install_python_dependencies.sh
+    - export PATH=$PATH:$HOME/python3.4/bin
+install:
+    - python3.4 -m pip install --user -r requirements_afm.txt
+    - python3.4 -m pip install --user -r requirements_agent.txt
+before_script:
+    - psql -U postgres -c "DROP DATABASE IF EXISTS slamon;"
+    - psql -U postgres -c "DROP DATABASE IF EXISTS slamon_tests;"
+    - psql -U postgres -c "DROP USER IF EXISTS afm;"
+    - psql -U postgres -c "CREATE DATABASE slamon;"
+    - psql -U postgres -c "CREATE DATABASE slamon_tests;"
+    - psql -U postgres -c "CREATE USER afm WITH PASSWORD 'changeme';"
+    - psql -U postgres -c "GRANT ALL ON DATABASE slamon TO afm;"
+    - psql -U postgres -c "GRANT ALL ON DATABASE slamon_tests TO afm;"
+script:
+    - nosetests
+    - ./gradlew check
+notifications:
+    webhooks:
+        urls:
+            - secure: E0kk5KwQfX8BM7b5mPWnkFKsEegVQ29SykWm34Fg7CNw3eYj0/lNklZDHg0oSdBiaYYUB3FG1MaFg7tu8DiQ53gvmpLNpjJ0oOXE8cil8AHlj4/yVmBPBp0pWSkqaYB3EEJts2WEBB0kdoKP+zRDlMkMvXa2Be2fbxl7ODCjWVxkYNzJDD/a8ZWiD/ru3EcKHj8E+WbTqFwFjCs4oI9VZSnGlCCttg//whZBVXl4JUjB3y7vf6QIEOtMy9lN2NUugYIKNoigpC6u3UUY2zy91blfICDBJJGPtbnswCqy/M4ETrQnjDldAb4/YfV07sWGYNUr14L3NHgJcmlX7m6nneSJt5X8B5BPxkKApYQ2loeuK4Ny1pjTavSXG73sSa6FE5fHlKGgpP2N5UWnCDRY54hkInXj4So8qzQFvZ+NifS1YlYEg/Lzndu5HqvwclGTSqlakR/KWeEvf7BEZpRkIuocdHW9P1dmMHSqKktT+dUAFvG4UacV4ltImlWJR6zqPyYKuobIf9eH4SGm3/YTGM2X8IHuEH1OiUEOTxZEqcZKenxEM76DYqO1p7BoP1nIfEVI/QcYNl9eWFG8+g8g+347rGf03nZ6UHof6oiSmRfv/fV+Lii7S2gNlkGhynWN8gDmwSg7VL3xYFP3eSpYLBRDOZa8Ji94Jj75D/lCc00=
+        on_success: change
+        on_failure: always
+        on_start: false
